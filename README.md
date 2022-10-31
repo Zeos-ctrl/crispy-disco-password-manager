@@ -25,4 +25,4 @@ To set up the database until the docker make file is written run these commands:
 
 
 
-Or migrate from the sql up file in the ==Migrations== folder.
+Or migrate from the sql up file in the **Migrations** folder.
