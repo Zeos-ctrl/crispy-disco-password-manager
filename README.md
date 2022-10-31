@@ -1,6 +1,11 @@
 # crispy-disco-password-manager
 
-## To set up the database until the docker make file is written run these commands:
+
+
+To set up the database until the docker make file is written run these commands:
+
+
+
 
 >export DATABASE_URL="mysql://root:password@localhost/passwords"
 >
@@ -17,4 +22,7 @@
 >    password varchar(255) NOT NULL
 >);
 
-Or migrate from the sql up file in the **Migrations** folder.
+
+
+
+Or migrate from the sql up file in the ==Migrations== folder.
