@@ -25,11 +25,7 @@ impl User {
         let cipher = Cipher::new_128(&key);
 
         let encrypted = cipher.cbc_encrypt(&iv, text);
-<<<<<<< HEAD
 
-=======
-        
->>>>>>> refs/remotes/origin/main
         encrypted
     }
 
@@ -123,18 +119,13 @@ async fn list_creds(pool: &MySqlPool) -> anyhow::Result<()> {
 
     for cred in creds {
         println!(
-<<<<<<< HEAD
-            "- {:?} : {:?}",
-=======
-            "-{:?}:{:?}",
->>>>>>> refs/remotes/origin/main
-            &cred.username,
-            User::aes_decrypt(&cred.password)
-            );
+        "- {:?} : {:?}",
+        &cred.username,
+        User::aes_decrypt(&cred.password)
+        );
     }
     Ok(())
 }
-<<<<<<< HEAD
 
 #[sqlx::test]
 async fn add_creds_test(pool: MySqlPool){
@@ -214,5 +205,3 @@ fn aes_test(){
 
     assert_eq!(decrypted_text,text);
 }
-=======
->>>>>>> refs/remotes/origin/main
