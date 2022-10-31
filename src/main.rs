@@ -25,7 +25,7 @@ impl User {
         let cipher = Cipher::new_128(&key);
 
         let encrypted = cipher.cbc_encrypt(&iv, text);
-        
+
         encrypted
     }
 
@@ -119,10 +119,89 @@ async fn list_creds(pool: &MySqlPool) -> anyhow::Result<()> {
 
     for cred in creds {
         println!(
-            "-{:?}:{:?}",
+            "- {:?} : {:?}",
             &cred.username,
             User::aes_decrypt(&cred.password)
             );
     }
     Ok(())
+}
+
+#[sqlx::test]
+async fn add_creds_test(pool: MySqlPool){
+    let _query = sqlx::query!(
+        r#"
+        INSERT INTO passwords( username, password)
+        VALUES (?, ?)
+        "#,
+        "test",
+        "test"
+        )
+        .execute(&pool)
+        .await;
+    
+    match _query {
+        Ok(_query) => assert!(true),
+        Err(_query) => {
+            panic!("ERROR ADDING A USER: {}",_query)
+        }
+    }
+}
+
+#[sqlx::test]
+async fn remove_creds_test(pool: MySqlPool){
+    let _query = sqlx::query!(
+        r#"
+        DELETE FROM passwords
+        WHERE password = ?
+        AND username = ?
+        "#,
+        "test",
+        "test"
+        )
+        .execute(&pool)
+        .await;
+    
+    match _query {
+        Ok(_query) => assert!(true),
+        Err(_query) => {
+            panic!("ERROR REMOVING A USER: {}",_query)
+        }
+    }
+}
+
+#[sqlx::test]
+async fn list_creds_test(pool: MySqlPool){
+    let _creds = sqlx::query!(
+        r#"
+        SELECT username, password
+        FROM passwords
+        "#
+        )
+        .fetch_all(&pool)
+        .await;
+
+    match _creds {
+        Ok(_creds) => assert!(true),
+        Err(_creds) => {
+            panic!("ERROR READING DATABASE: {}",_creds)
+        }
+    }
+}
+
+#[test]
+fn aes_test(){
+    let key = hex!("000102030405060708090a0b0c0d0e0f");
+    let text = String::from("test");
+    let text_as_bytes = &text.as_bytes();
+    let iv = hex!("f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff");
+
+    let cipher = Cipher::new_128(&key);
+
+    let encrypted = cipher.cbc_encrypt(&iv, text_as_bytes);
+
+    let decrypted = cipher.cbc_decrypt(&iv, &encrypted[..]);
+    let decrypted_text = String::from_utf8(decrypted).unwrap();
+
+    assert_eq!(decrypted_text,text);
 }
